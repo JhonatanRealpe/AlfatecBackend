@@ -1,30 +1,350 @@
-<div class="container">
- <h2>Mis tareas</h2>
- <!--Todos input-->
- <form role="form" ng-submit="addTarea()">
-   <div class="row">
-     <div class="input-group">
-       <input type="text" ng-model="tarea" placeholder="¿Que tarea quieres guardar?"
-       class="form-control">
-       <span class="input-group-btn">
-         <input type="submit" class="btn btn-primary" value="Añadir">
-       </span>
-     </div>
-   </div>
- </form>
- <!--Todos list a-->
- <div ui-sortable ng-model="tareas">
-  <p class="input-group" ng-repeat="tarea in tareas" style="padding: 5px 10px; cursor: move;">
-    <input type="text" ng-model="tarea" class="form-control">
-    <span class="input-group-btn">
-      <button class="btn btn-danger" ng-click="eliminarTarea($index)" aria-label="Eliminar">X</button>
-    </span>
-  </p>
- </div>
- <!--CRUD Usuarios-->
- <h1>Usuarios</h1>
- <div class="gridStyles" ng-grid="gridOptions">
-
- </div>
- 
+<div class="row">
+    <div class="col-lg-6 offset-lg-3">
+        <div class="row" ng-show="vm.show == 'all'">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <button type="button" class="btn btn-sm btn-primary" ng-click="vm.show = 'newUser'">Nuevo usuario</button>
+                            <button type="button" class="btn btn-sm btn-danger" ng-click="vm.deleteDoctors()">Borrar médicos</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-hover ">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Nombre completo
+                                    </th>
+                                    <th>
+                                        Tipo
+                                    </th>
+                                    <th>
+                                        Acciones
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody ng-repeat="usuario in vm.usuarios">
+                                <tr>
+                                    <td>
+                                        <span ng-bind="usuario.fullName"></span>
+                                    </td>
+                                    <td>
+                                        <span ng-bind="usuario.tipo"></span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary" ng-click="vm.showUser(usuario.id)"><span class="fas fa-search"></span></button>
+                                        <button class="btn btn-sm btn-outline-primary" ng-click="vm.editUser(usuario.id)"><span class="fas fa-edit"></span></button>
+                                        <button class="btn btn-sm btn-outline-primary" ng-click="vm.deleteUser(usuario.id)"><span class="fas fa-trash-alt"></span></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" ng-show="vm.show == 'userDetails'">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <span class="text-capitalize" ng-bind="vm.currUser.tipo"></span>
+                            <span ng-bind="vm.currUser.fullName"></span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="form-group row">
+                                <label class="col-sm-6 col-form-label">Nombre completo:</label>
+                                <div class="col-sm-6">
+                                    <input type="text" readonly class="form-control-plaintext" ng-model="vm.currUser.fullName">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-6 col-form-label">Tipo:</label>
+                                <div class="col-sm-6">
+                                    <span class="text-capitalize" ng-bind="vm.currUser.tipo"></span>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-6 col-form-label">Género:</label>
+                                <div class="col-sm-6">
+                                    <input type="text" readonly class="form-control-plaintext" ng-model="vm.currUser.genero">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-6 col-form-label">Fecha de nacimiento:</label>
+                                <div class="col-sm-6">
+                                    <input type="text" readonly class="form-control-plaintext" ng-model="vm.currUser.fechaNacimiento">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-6 col-form-label">NIF/Pasaporte:</label>
+                                <div class="col-sm-6">
+                                    <input type="text" readonly class="form-control-plaintext" ng-model="vm.currUser.nif">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-6 col-form-label">Dirección:</label>
+                                <div class="col-sm-6">
+                                    {{vm.currUser.direccion}}
+                                </div>
+                            </div>
+                        </form>
+                        <div ng-show="vm.currUser.tipo == 'paciente'">
+                            <h4>Listado de aseguradoras</h4>
+                            <table class="table table-hover ">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Nombre completo
+                                        </th>
+                                        <th>
+                                            Tipo
+                                        </th>
+                                        <th>
+                                            Número de tarjeta
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody ng-repeat="aseguradora in vm.currUser.aseguradoras">
+                                    <tr>
+                                        <td>
+                                            <span ng-bind="aseguradora.nombre"></span>
+                                        </td>
+                                        <td>
+                                            <span ng-bind="aseguradora.tipoSeguro"></span>
+                                        </td>
+                                        <td>
+                                            <span ng-bind="aseguradora.numeroTarjeta"></span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <button type="button" class="btn btn-primary btn-block" ng-click="vm.show = 'all'">Volver</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" ng-show="vm.show == 'newUser'">
+            <!--<div class="row">-->
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <h4>Nuevo usuario</h4>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form name="newForm">
+                            <div class="form-group">
+                                <label>Tipo</label>
+                                <select class="form-control" ng-model="vm.newUser.tipo">
+                                    <option value="paciente">Paciente</option>
+                                    <option value="profesional">Profesional</option>
+                                </select>
+                            </div>
+                            <div class="form-group" ng-if="vm.newUser.tipo">
+                                <label>
+                                    <span ng-if="vm.newUser.tipo == 'paciente'">NHC</span>
+                                    <span ng-if="vm.newUser.tipo == 'profesional'">N° colegiado</span>
+                                    <span class="text-danger" ng-if="newForm.id.$invalid && !newForm.id.$pristine"> Campo requerido</span>
+                                </label>
+                                <input type="text" class="form-control" ng-model="vm.newUser.id" name="id" required>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    Nombre
+                                    <span class="text-danger" ng-if="newForm.nombre.$invalid && !newForm.nombre.$pristine"> Campo requerido</span>
+                                </label>
+                                <input type="text" class="form-control" ng-model="vm.newUser.nombre.nombre" name="nombre" required>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    Primer apellido
+                                    <span class="text-danger" ng-if="newForm.apellido1.$invalid && !newForm.apellido1.$pristine"> Campo requerido</span>
+                                </label>
+                                <input type="text" class="form-control" ng-model="vm.newUser.nombre.apellido1" name="apellido1" required>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    Segundo apellido
+                                </label>
+                                <input type="text" class="form-control" ng-model="vm.newUser.nombre.apellido2">
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    Género
+                                </label>
+                                <select class="form-control" ng-model="vm.newUser.genero">
+                                    <option value="M">Masculino</option>
+                                    <option value="F">Femenino</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    Fecha de nacimiento
+                                </label>
+                                <input type="text" class="form-control" ng-model="vm.newUser.fechaNacimiento">
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    NIF/Pasaporte
+                                </label>
+                                <input type="text" class="form-control" ng-model="vm.newUser.nif">
+                            </div>
+                            <div class="form-group" ng-if="vm.newUser.tipo == 'profesional'">
+                                <label>
+                                    Tipo de profesional
+                                </label>
+                                <select class="form-control" ng-model="vm.newUser.tipoProfesional">
+                                    <option value="medico">Médico</option>
+                                    <option value="enfermero">Enfermero</option>
+                                    <option value="administrativo">Administrativo</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Dirección</label>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label>Calle</label>
+                                            <input type="text" class="form-control" ng-model="newUser.direccion.calle">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Número</label>
+                                            <input type="text" class="form-control" ng-model="newUser.direccion.numero">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Puerta</label>
+                                            <input type="text" class="form-control" ng-model="newUser.direccion.puerta">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Código postal</label>
+                                            <input type="text" class="form-control" ng-model="newUser.direccion.codigoPostal">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Ciudad</label>
+                                            <input type="text" class="form-control" ng-model="newUser.direccion.ciudad">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group text-center">
+                                <button type="button" class="btn btn-primary" ng-disabled="newForm.$invalid" ng-click="vm.saveUser()">Guardar</button>
+                                <button type="button" class="btn btn-warning" ng-click="vm.cancelSave()">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" ng-show="vm.show == 'editUser'">
+            <!--<div class="row">-->
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <h4>Editar usuario</h4>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form name="updateForm">
+                            <div class="form-group">
+                                <label>Tipo</label>
+                                <select class="form-control" ng-model="vm.currUser.tipo">
+                                    <option value="paciente">Paciente</option>
+                                    <option value="profesional">Profesional</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    Nombre*
+                                    <span class="text-danger" ng-if="updateForm.nombre.$invalid"> Campo requerido</span>
+                                </label>
+                                <input type="text" class="form-control" ng-model="vm.currUser.nombre.nombre" name="nombre" required>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    Primer apellido
+                                    <span class="text-danger" ng-if="updateForm.apellido1.$invalid"> Campo requerido</span>
+                                </label>
+                                <input type="text" class="form-control" ng-model="vm.currUser.nombre.apellido1" name="apellido1" required="">
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    Segundo apellido
+                                </label>
+                                <input type="text" class="form-control" ng-model="vm.currUser.nombre.apellido2">
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    Género
+                                </label>
+                                <select class="form-control" ng-model="vm.currUser.genero">
+                                    <option value="M">Masculino</option>
+                                    <option value="F">Femenino</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    Fecha de nacimiento
+                                </label>
+                                <input type="text" class="form-control" ng-model="vm.currUser.fechaNacimiento">
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    NIF/Pasaporte
+                                </label>
+                                <input type="text" class="form-control" ng-model="vm.currUser.nif">
+                            </div>
+                            <div class="form-group" ng-if="vm.currUser.tipo == 'profesional'">
+                                <label>
+                                    Tipo de profesional
+                                </label>
+                                <select class="form-control" ng-model="vm.currUser.tipoProfesional">
+                                    <option value="medico">Médico</option>
+                                    <option value="enfermero">Enfermero</option>
+                                    <option value="administrativo">Administrativo</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Dirección</label>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label>Calle</label>
+                                            <input type="text" class="form-control" ng-model="currUser.direccion.calle">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Número</label>
+                                            <input type="text" class="form-control" ng-model="currUser.direccion.numero">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Puerta</label>
+                                            <input type="text" class="form-control" ng-model="currUser.direccion.puerta">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Código postal</label>
+                                            <input type="text" class="form-control" ng-model="currUser.direccion.codigoPostal">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Ciudad</label>
+                                            <input type="text" class="form-control" ng-model="currUser.direccion.ciudad">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group text-center">
+                                <button type="button" class="btn btn-primary" ng-disabled="updateForm.$invalid" ng-click="vm.updateUser()">Guardar</button>
+                                <button type="button" class="btn btn-warning" ng-click="vm.cancelSave()">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

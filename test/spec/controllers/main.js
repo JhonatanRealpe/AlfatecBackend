@@ -3,7 +3,7 @@
 describe('Controller: MainCtrl', function () {
 
   // load the controller's module
-  beforeEach(module('pruebaAlfatecFronendApp'));
+  beforeEach(module('alfatecApp'));
 
   var MainCtrl,
     scope;
@@ -17,20 +17,7 @@ describe('Controller: MainCtrl', function () {
     });
   }));
 
-  it('debe añadir items a la lista', function () {
-    scope.tarea ='Test 1';
-    scope.addTarea();
-    expect(scope.todos.length).toBe(1);
-  });
-
-  it('debe añadir y luego eliminar un item de la lista', function () {
-    scope.tarea ='Test 1';
-    scope.addTarea();
-    scope.eliminarTarea(0);
-    expect(scope.tareas.length).toBe(0);
-  });
-
-  it('no debe tener items al empezar', function () {
-    expect(scope.todos.length).toBe(0);
+  it('should attach a list of awesomeThings to the scope', function () {
+    expect(MainCtrl.awesomeThings.length).toBe(3);
   });
 });

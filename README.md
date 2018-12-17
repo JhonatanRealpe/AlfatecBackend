@@ -1,12 +1,12 @@
-# prueba-alfatec-fronend
+# alfatec
 
-This project is generated with [yo angular generator](https://github.com/yeoman/generator-angular)
-version 0.16.0.
+## Descripción
 
-## Build & development
+El proyecto utiliza indexedDB para almacenar los datos. Al iniciar por primera vez guarda datos de prueba en la bd.
 
-Run `grunt` for building and `grunt serve` for preview.
+## Construcción
 
-## Testing
+`grunt serve` para arrancar el servidor.
 
-Running `grunt test` will run the unit tests with karma.
+
+
